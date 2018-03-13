@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Move into the jenkins directory
+#cd /var/lib/jenkins
+#PATH=$PATH:/opt/bcs/bin
+
+#git add *.xml
+#git add jobs/*/config.xml
+#git add users/*/config.xml
+#git add userContent/*
+#git add email-templates/*
+#git add plugins/*
+
+# Remove files from the remote repo that have been removed locally.
+#COUNT=`git log --pretty=format: --name-only --diff-filter=B | wc -l`
+#if [ $COUNT -ne 0 ]
+#then git log --pretty=format: --name-only --diff-filter=B | xargs git rm
+#fi
+
+# Commit the differences
+#git commit -a -m "Automated commit of Jenkins chaos"
+
+# Push the commit up to the remote repository.
+#git push origin master
+
+#aws s3 sync   --exclude "*" --include "*config.xml" . s3://backupofjenkins --debug --sse
+#aws s3 sync   --exclude "*" --include "*config.xml" s3://jenkinsuploadoffiles --sse AES256
+#aws s3 sync pom.xml s3://jenkinsuploadoffiles --sse 
+aws s3 sync  --sse --exclude "*" --include "*config.xml" . s3://jenkinsuploadoffiles --debug

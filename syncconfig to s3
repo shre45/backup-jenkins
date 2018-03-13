@@ -1,0 +1,1 @@
+aws s3 sync --exclude "*" --include "config.xml" . s3://aeskey --sse

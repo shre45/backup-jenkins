@@ -1,0 +1,35 @@
+# Delete all files in the workspace
+rm -rf *
+
+# Create a directory for the job definitions
+mkdir -p backup/jobs
+
+# Copy global configuration files into the workspace
+cp /var/lib/jenkins/*.xml backup/
+
+
+
+# Copy user configuration files into the workspace
+cp -r $JENKINS_HOME/users backup/
+
+# Copy custom Pipeline workflow libraries
+cp -r $JENKINS_HOME/workflow-libs backup/
+
+# Copy job definitions into the workspace
+rsync -am --include='config.xml' --include='*/'  --exclude='*' /var/lib/jenkins/jobs/ backup/jobs/
+#aws s3 sync --sse --exclude "*" --include "*config.xml" s3://backupofjenkins --debug
+# Create an archive from all copied files (since the S3 plugin cannot copy folders recursively)
+tar czf jenkins-configuration.tar.gz backup/
+
+# Remove the directory so only the tar.gz gets copied to S3
+rm -rf backup/
+
+
+
+
+# Upload archive to S3
+echo "Uploading archive to S3"
+aws s3  cp jenkins-configuration.tar.gz s3://backupofjenkins/ --sse
+
+# Remove tar.gz after it gets uploaded to S3
+rm -rf jenkins-configuration.tar.gz
